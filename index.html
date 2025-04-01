@@ -1,7 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Spinner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        #spinner {
+            width: 300px;
+            height: 300px;
+            border: 5px solid #333;
+            border-radius: 50%;
+            position: relative;
+        }
+        #spinBtn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #arrow {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 30px solid red;
+        }
+    </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+    <div id="spinner">
+        <div id="arrow"></div>
+        <canvas id="wheelCanvas" width="300" height="300"></canvas>
+    </div>
+    <button id="spinBtn">Spin</button>
+
+    <script>
+        const tasks = ["Do the dishes", "Clean the toilet", "Answer one email", "Take out the trash"];
+        const canvas = document.getElementById("wheelCanvas");
+        const ctx = canvas.getContext("2d");
+        const spinBtn = document.getElementById("spinBtn");
+        let angle = 0;
+
+        function drawWheel() {
+            const numTasks = tasks.length;
+            const arc = 2 * Math.PI / numTasks;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < numTasks; i++) {
+                ctx.beginPath();
+                ctx.fillStyle = i % 2 === 0 ? "#f39c12" : "#e74c3c";
+                ctx.moveTo(150, 150);
+                ctx.arc(150, 150, 150, arc * i, arc * (i + 1));
+                ctx.fill();
+                ctx.save();
+                ctx.translate(150, 150);
+                ctx.rotate(arc * i + arc / 2);
+                ctx.fillStyle = "white";
+                ctx.fillText(tasks[i], 50, 10);
+                ctx.restore();
+            }
+        }
+
+        function spinWheel() {
+            const randomSpin = Math.floor(Math.random() * 360) + 720;
+            angle += randomSpin;
+            canvas.style.transition = "transform 3s ease-out";
+            canvas.style.transform = `rotate(${angle}deg)`;
+        }
+
+        spinBtn.addEventListener("click", spinWheel);
+        drawWheel();
+    </script>
 </body>
 </html>
